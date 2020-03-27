@@ -12,7 +12,7 @@ const BubblePage = () => {
 
   useEffect(() => {
     axiosWithAuth()
-      .get("/colors")
+      .get("/api/colors")
       .then(res => {
         console.log("bubblepage/axiosAuth useEffect worked!", res.data);
         setColorList(res.data);

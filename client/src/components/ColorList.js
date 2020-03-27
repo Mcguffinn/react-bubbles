@@ -15,6 +15,13 @@ const ColorList = ({ colors, updateColors }) => {
     setColorToEdit(color)
   }  
   
+  const [newColor, setNewColor] = useState({
+    color: '',
+    code: {
+      hex: ''
+    }
+  })
+
   const saveEdit = e => {
     e.preventDefault()
     axiosWithAuth()
@@ -33,6 +40,25 @@ const ColorList = ({ colors, updateColors }) => {
       .catch(err => console.error(err))
   }  
   
+  const newEdit = e =>{
+    e.preventDefault()
+    axiosWithAuth()
+    .post(`/api/colors/`, newColor)
+    .then(res => {
+      console.log(res)
+      updateColors(res.data)
+        setNewColor({
+          color: '',
+          code: {
+            hex: ''
+          }
+        })
+      })
+    .catch(err => {
+      console.log('It didnt work',err)
+    })
+  }
+
   const deleteColor = color => {
     axiosWithAuth()
       // make a delete request to delete this color
@@ -48,6 +74,7 @@ const ColorList = ({ colors, updateColors }) => {
       })
       .catch(err => console.error(err))
   }  
+
   
   return (
     <div className='colors-wrap'>
@@ -100,12 +127,39 @@ const ColorList = ({ colors, updateColors }) => {
       )}
       <div className='spacer' />
       {/* stretch - build another form here to add a color */}
-      <form>
-        <input type='text' placeholder='new color' style={{ outline: 0 }} />
-        <input type='text' placeholder='hex code' style={{ outline: 0 }} />
-      </form>
+        <form onSubmit={newEdit}>
+          <legend>Add a Color</legend>
+          <input 
+            type='text' 
+            placeholder='new color' 
+            style={{ outline: 0 }} 
+            onChange={e=>{
+              setNewColor({
+                ...newColor,
+                color: e.target.value
+              })
+            }}
+            value={newColor.color}
+          />
+          <input 
+            type='text' 
+            placeholder='hex code' 
+            style={{ outline: 0 }} 
+            onChange={e=>{
+              setNewColor({
+                ...newColor,
+                code:{
+                  hex: e.target.value
+                }
+              })
+            }}
+            value={newColor.code.hex}
+          />
+          <button>Add Color!</button>
+        </form>
     </div>
   )
+
 }
 
-export default ColorList
+export default ColorList;
